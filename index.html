@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Circles</title>
+</head>
+<body>
+    <script src="raphael-min.js"></script>
+    <script>
+        var paper = Raphael(0, 0, 1000, 500);
+
+        var types = [
+                "external touch",
+                "internal touch",
+                "inside",
+                "outside"
+        ];
+
+        var randomType;
+
+        var radiusFirstCircle;
+        var radiusSecondCircle;
+
+        var xFirstCircle;
+        var yFirstCircle;
+        var xSecondCircle;
+        var ySecondCircle;
+
+        var difference;
+
+        var firstCircle;
+        var secondCircle;
+
+        function setRandomType() {
+            var randomIndex = Math.floor(Math.random() * types.length);
+            randomType = types[randomIndex];
+        }
+
+        function setRadius() {
+            radiusFirstCircle = Math.floor((Math.random() * 50) + 50);
+            radiusSecondCircle = Math.floor((Math.random() * 50) + 30);
+        }
+
+        function setFirstCircleCoordinate() {
+            xFirstCircle = Math.floor((Math.random() * 150) + 150);
+            yFirstCircle = Math.floor((Math.random() * 150) + 150);
+        }
+
+        function freePlace() {
+            difference = radiusFirstCircle - radiusSecondCircle;
+            return Math.floor((Math.random() * (difference * 2) - difference));
+        }
+
+        function outsideRandomDistance() {
+            return Math.floor(Math.random() * 100);
+        }
+
+        function externalTouch() {
+            xSecondCircle = xFirstCircle + radiusFirstCircle + radiusSecondCircle;
+            ySecondCircle = yFirstCircle;
+        }
+
+        function internalTouch() {
+            if (radiusSecondCircle >= radiusFirstCircle) {
+                difference = radiusFirstCircle - radiusSecondCircle;
+                radiusFirstCircle += difference;
+                radiusSecondCircle -= difference;
+            }
+
+            xSecondCircle = xFirstCircle + radiusFirstCircle - radiusSecondCircle;
+            ySecondCircle = yFirstCircle;
+        }
+
+        function inside() {
+            if (radiusSecondCircle >= radiusFirstCircle) {
+                difference = radiusFirstCircle - radiusSecondCircle;
+                radiusFirstCircle += difference;
+                radiusSecondCircle -= difference;
+            }
+            xSecondCircle = xFirstCircle + freePlace();
+            ySecondCircle = yFirstCircle;
+        }
+
+        function outside() {
+            xSecondCircle = xFirstCircle + radiusFirstCircle + radiusSecondCircle + outsideRandomDistance();
+            ySecondCircle = yFirstCircle;
+        }
+
+        function setSecondCircleCoordinate() {
+            if (randomType === "external touch") {
+                externalTouch();
+            } else if (randomType === "internal touch") {
+                internalTouch();
+            } else if (randomType === "outside") {
+                outside();
+            } else if (randomType === "inside") {
+                inside();
+            }
+        }
+
+        function draw() {
+            firstCircle = paper.circle(xFirstCircle, yFirstCircle, radiusFirstCircle);
+            secondCircle = paper.circle(xSecondCircle, ySecondCircle, radiusSecondCircle);
+        }
+
+        function start() {
+            setRandomType();
+            setRadius();
+            setFirstCircleCoordinate();
+            setSecondCircleCoordinate();
+            draw();
+        }
+
+        start();
+    </script>
+</body>
+</html>
